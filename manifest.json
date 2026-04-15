@@ -1,0 +1,18 @@
+{
+    "name": "MedVault",
+    "short_name": "MedVault",
+    "description": "Smart Pharmacy & Healthcare Platform",
+    "start_url": "./index.html",
+    "display": "standalone",
+    "background_color": "#07080d",
+    "theme_color": "#6366f1",
+    "orientation": "any",
+    "icons": [
+        {
+            "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='10' y='35' width='80' height='30' rx='8' fill='%236366f1'/><rect x='35' y='10' width='30' height='80' rx='8' fill='%236366f1'/></svg>",
+            "sizes": "any",
+            "type": "image/svg+xml",
+            "purpose": "any"
+        }
+    ]
+}
