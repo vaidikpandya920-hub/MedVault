@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In — MedVault</title>
+    <meta name="description" content="Sign in to MedVault — Your Smart Pharmacy & Healthcare Platform">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --bg:       #07080d;
+            --card:     rgba(255,255,255,0.035);
+            --border:   rgba(255,255,255,0.08);
+            --glow:     rgba(99,102,241,0.25);
+            --t1:       #f0f0ff;
+            --t2:       #9898b8;
+            --t3:       #55556e;
+            --indigo:   #6366f1;
+            --cyan:     #06b6d4;
+            --green:    #10b981;
+            --amber:    #f59e0b;
+            --grad:     linear-gradient(135deg,#6366f1,#06b6d4);
+            --font:     'Inter', sans-serif;
+        }
+
+        body {
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--t1);
+            min-height: 100vh;
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* ── Ambient ── */
+        .bg {
+            position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden;
+        }
+        .orb {
+            position: absolute; border-radius: 50%;
+            filter: blur(90px); opacity: 0.22;
+            animation: drift 18s ease-in-out infinite alternate;
+        }
+        .o1 { width:550px;height:550px;background:radial-gradient(circle,#6366f1,transparent);top:-180px;left:-120px;animation-duration:20s; }
+        .o2 { width:420px;height:420px;background:radial-gradient(circle,#06b6d4,transparent);bottom:-100px;right:-80px;animation-duration:24s;animation-delay:-6s; }
+        .o3 { width:300px;height:300px;background:radial-gradient(circle,#10b981,transparent);top:55%;left:55%;animation-duration:22s;animation-delay:-11s; }
+        @keyframes drift { from{transform:translate(0,0) scale(1)} to{transform:translate(50px,35px) scale(1.1)} }
+
+        .grid-bg {
+            position: fixed; inset: 0; z-index: 0; pointer-events: none;
+            background-image:
+                linear-gradient(rgba(99,102,241,0.035) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(99,102,241,0.035) 1px, transparent 1px);
+            background-size: 48px 48px;
+        }
+
+        /* ── Layout ── */
+        .wrap {
+            position: relative; z-index: 1;
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            width: 100%; min-height: 100vh;
+        }
+
+        /* ── LEFT BRAND PANEL ── */
+        .brand {
+            display: flex; flex-direction: column; justify-content: center;
+            padding: 60px 64px;
+            background: linear-gradient(145deg,rgba(99,102,241,0.07),rgba(6,182,212,0.04));
+            border-right: 1px solid var(--border);
+            position: relative; overflow: hidden;
+        }
+        .brand::after {
+            content:'';position:absolute;bottom:-60px;left:-60px;
+            width:320px;height:320px;border-radius:50%;
+            background:radial-gradient(circle,rgba(99,102,241,0.07),transparent 70%);
+        }
+
+        /* Logo */
+        .logo { display:flex;align-items:center;gap:14px;margin-bottom:56px; }
+        .logo-icon {
+            width:52px;height:52px;border-radius:15px;
+            background: var(--grad);
+            display:flex;align-items:center;justify-content:center;
+            box-shadow:0 0 28px rgba(99,102,241,0.45);
+            animation: iconPulse 3s ease-in-out infinite;
+        }
+        @keyframes iconPulse{0%,100%{box-shadow:0 0 20px rgba(99,102,241,0.4)}50%{box-shadow:0 0 40px rgba(99,102,241,0.7)}}
+        .logo-text { font-size:26px;font-weight:800;letter-spacing:-0.5px; }
+        .logo-text span { background:var(--grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent; }
+
+        /* Headline */
+        .headline { margin-bottom:40px; }
+        .headline h1 {
+            font-size:clamp(32px,3.5vw,46px);
+            font-weight:900;line-height:1.12;
+            letter-spacing:-2px;margin-bottom:18px;
+        }
+        .headline h1 em {
+            font-style:normal;
+            background:var(--grad);
+            -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+        }
+        .headline p { font-size:15px;color:var(--t2);line-height:1.75;max-width:420px; }
+
+        /* Feature rows */
+        .features { display:flex;flex-direction:column;gap:14px;margin-bottom:44px; }
+        .feat {
+            display:flex;align-items:center;gap:14px;
+            padding:14px 16px;
+            background:rgba(255,255,255,0.025);
+            border:1px solid var(--border);border-radius:12px;
+            transition:border-color .2s;
+        }
+        .feat:hover { border-color:rgba(99,102,241,0.25); }
+        .feat-icon { font-size:22px;width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0; }
+        .feat-icon.i { background:rgba(99,102,241,0.12); }
+        .feat-icon.g { background:rgba(16,185,129,0.12); }
+        .feat-icon.c { background:rgba(6,182,212,0.12); }
+        .feat-icon.a { background:rgba(245,158,11,0.12); }
+        .feat-body strong { display:block;font-size:13px;font-weight:700;margin-bottom:1px; }
+        .feat-body span { font-size:12px;color:var(--t3); }
+
+        /* Stats */
+        .stats { display:flex;gap:36px; }
+        .stat-val { font-size:26px;font-weight:900;letter-spacing:-1px; }
+        .stat-val.i { color:var(--indigo); }
+        .stat-val.c { color:var(--cyan); }
+        .stat-val.g { color:var(--green); }
+        .stat-lbl { font-size:11px;color:var(--t3);margin-top:2px; }
+
+        /* ── RIGHT LOGIN PANEL ── */
+        .panel {
+            display:flex;flex-direction:column;
+            align-items:center;justify-content:center;
+            padding:60px 48px;
+        }
+
+        .login-box { width:100%;max-width:400px; }
+
+        .login-top { text-align:center;margin-bottom:36px; }
+        .login-top .emoji { font-size:40px;display:block;margin-bottom:14px; }
+        .login-top h2 { font-size:26px;font-weight:800;letter-spacing:-0.5px;margin-bottom:8px; }
+        .login-top p  { font-size:14px;color:var(--t2);line-height:1.6; }
+
+        /* Google button container — rendered by Google */
+        .google-btn-wrap {
+            display:flex;justify-content:center;
+            margin-bottom:20px;
+        }
+
+        /* Fallback custom Google btn (shown only if GSI not loaded) */
+        .google-btn-fallback {
+            width:100%;display:flex;align-items:center;justify-content:center;gap:12px;
+            padding:13px 20px;border-radius:12px;
+            background:rgba(255,255,255,0.06);
+            border:1px solid rgba(255,255,255,0.14);
+            color:var(--t1);font-family:var(--font);font-size:15px;font-weight:600;
+            cursor:pointer;transition:all .2s;display:none;
+        }
+        .google-btn-fallback:hover { background:rgba(99,102,241,0.1);border-color:rgba(99,102,241,0.4); }
+
+        /* Divider */
+        .divider {
+            display:flex;align-items:center;gap:14px;
+            margin:20px 0;color:var(--t3);font-size:12px;
+        }
+        .divider::before,.divider::after { content:'';flex:1;height:1px;background:var(--border); }
+
+        /* Demo btn */
+        .demo-btn {
+            width:100%;padding:13px;border-radius:12px;border:none;
+            background:var(--grad);color:#fff;
+            font-family:var(--font);font-size:15px;font-weight:700;
+            cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;
+            box-shadow:0 4px 24px rgba(99,102,241,0.3);
+            transition:all .25s;
+        }
+        .demo-btn:hover { transform:translateY(-2px);box-shadow:0 8px 32px rgba(99,102,241,0.45); }
+        .demo-btn:active { transform:translateY(0); }
+
+        /* Footer note */
+        .note { font-size:12px;color:var(--t3);text-align:center;margin-top:28px;line-height:1.8; }
+        .note a { color:var(--cyan);text-decoration:none; }
+
+        /* Trust badges */
+        .trust {
+            display:flex;align-items:center;justify-content:center;gap:16px;
+            margin-top:32px;padding-top:28px;border-top:1px solid var(--border);
+        }
+        .trust-lbl { font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:1px; }
+        .trust-badges { display:flex;gap:10px; }
+        .badge {
+            padding:5px 12px;border-radius:100px;
+            background:rgba(255,255,255,0.03);border:1px solid var(--border);
+            font-size:11px;color:var(--t2);font-weight:500;
+        }
+
+        /* Loading overlay */
+        .loader {
+            position:fixed;inset:0;z-index:999;background:var(--bg);
+            display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;
+            opacity:0;pointer-events:none;transition:opacity .3s;
+        }
+        .loader.on { opacity:1;pointer-events:all; }
+        .spin {
+            width:40px;height:40px;border-radius:50%;
+            border:3px solid rgba(99,102,241,0.2);border-top-color:var(--indigo);
+            animation:spin .8s linear infinite;
+        }
+        @keyframes spin { to { transform:rotate(360deg); } }
+        .spin-text { font-size:14px;color:var(--t2); }
+
+        /* Toast */
+        .toast {
+            position:fixed;bottom:24px;left:50%;transform:translateX(-50%);
+            background:rgba(20,22,38,0.97);border:1px solid var(--border);
+            backdrop-filter:blur(16px);padding:12px 20px;border-radius:12px;
+            font-size:14px;display:flex;align-items:center;gap:10px;
+            z-index:1000;opacity:0;transition:opacity .3s;
+            white-space:nowrap;
+        }
+        .toast.on { opacity:1; }
+
+        /* Responsive */
+        @media(max-width:768px) {
+            .wrap { grid-template-columns:1fr; }
+            .brand { display:none; }
+            .panel { padding:40px 24px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="bg">
+    <div class="orb o1"></div>
+    <div class="orb o2"></div>
+    <div class="orb o3"></div>
+</div>
+<div class="grid-bg"></div>
+
+<!-- Loading overlay -->
+<div class="loader" id="loader">
+    <div class="spin"></div>
+    <div class="spin-text" id="spin-text">Signing you in…</div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<div class="wrap">
+
+    <!-- ════════════ LEFT BRAND PANEL ════════════ -->
+    <div class="brand">
+        <div class="logo">
+            <div class="logo-icon">
+                <svg width="28" height="28" viewBox="0 0 30 30" fill="none">
+                    <rect x="2" y="10" width="26" height="10" rx="3" fill="white"/>
+                    <rect x="10" y="2" width="10" height="26" rx="3" fill="white"/>
+                </svg>
+            </div>
+            <div class="logo-text">Med<span>Vault</span></div>
+        </div>
+
+        <div class="headline">
+            <h1>Your Complete<br><em>Healthcare</em><br>Platform</h1>
+            <p>Order medicines, consult top doctors, book lab tests, and track your prescriptions — all in one intelligent, secure platform.</p>
+        </div>
+
+        <div class="features">
+            <div class="feat">
+                <div class="feat-icon i">🛒</div>
+                <div class="feat-body">
+                    <strong>Medicine Shop</strong>
+                    <span>10,000+ medicines with 30-minute delivery</span>
+                </div>
+            </div>
+            <div class="feat">
+                <div class="feat-icon g">👨‍⚕️</div>
+                <div class="feat-body">
+                    <strong>Consult a Doctor</strong>
+                    <span>Video & chat with 200+ certified specialists</span>
+                </div>
+            </div>
+            <div class="feat">
+                <div class="feat-icon c">🧪</div>
+                <div class="feat-body">
+                    <strong>Lab Tests</strong>
+                    <span>Home sample collection & instant online reports</span>
+                </div>
+            </div>
+            <div class="feat">
+                <div class="feat-icon a">⚡</div>
+                <div class="feat-body">
+                    <strong>Smart Dose Timer</strong>
+                    <span>AI pharmacokinetic scheduling & safety checks</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="stats">
+            <div>
+                <div class="stat-val i">50K+</div>
+                <div class="stat-lbl">Active Users</div>
+            </div>
+            <div>
+                <div class="stat-val c">200+</div>
+                <div class="stat-lbl">Doctors</div>
+            </div>
+            <div>
+                <div class="stat-val g">4.9 ★</div>
+                <div class="stat-lbl">App Rating</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ════════════ RIGHT LOGIN PANEL ════════════ -->
+    <div class="panel">
+        <div class="login-box">
+
+            <div class="login-top">
+                <span class="emoji">💊</span>
+                <h2>Welcome to MedVault</h2>
+                <p>Sign in to access your personal<br>health dashboard</p>
+            </div>
+
+            <!-- Google renders its own button here -->
+            <div class="google-btn-wrap" id="google-btn-wrap">
+                <div id="g-signin-btn"></div>
+            </div>
+
+            <!-- Fallback if google.accounts doesn't load -->
+            <button class="google-btn-fallback" id="google-fallback-btn">
+                <svg width="20" height="20" viewBox="0 0 48 48">
+                    <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+                    <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+                    <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+                    <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+                </svg>
+                Continue with Google
+            </button>
+
+            <div class="divider">or continue with</div>
+
+            <button class="demo-btn" id="demo-btn">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                    <circle cx="12" cy="7" r="4"/>
+                </svg>
+                Try Demo Account — Instant Access
+            </button>
+
+            <p class="note">
+                By signing in, you agree to our <a href="#">Terms</a> and <a href="#">Privacy Policy</a>.<br>
+                Your health data is encrypted end-to-end 🔒
+            </p>
+
+            <div class="trust">
+                <span class="trust-lbl">Trusted by</span>
+                <div class="trust-badges">
+                    <span class="badge">🔒 HIPAA</span>
+                    <span class="badge">✅ ISO 27001</span>
+                    <span class="badge">🇮🇳 DPDP</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    // ─── CONFIG ────────────────────────────────────────────────
+    const CLIENT_ID = '16962202410-sevqnvcgpb9ng32usmrjlo13fng6a4bo.apps.googleusercontent.com';
+    // ───────────────────────────────────────────────────────────
+
+    // If already logged in → go to app
+    try {
+        if (localStorage.getItem('medvault_user')) window.location.replace('index.html');
+    } catch(e) {}
+
+    // ── Helpers ──
+    const loader    = document.getElementById('loader');
+    const spinText  = document.getElementById('spin-text');
+    const toastEl   = document.getElementById('toast');
+    let toastTimer;
+
+    function showLoader(msg) {
+        spinText.textContent = msg || 'Signing you in…';
+        loader.classList.add('on');
+    }
+    function showToast(msg) {
+        clearTimeout(toastTimer);
+        toastEl.textContent = msg;
+        toastEl.classList.add('on');
+        toastTimer = setTimeout(() => toastEl.classList.remove('on'), 4000);
+    }
+    function saveUser(user) {
+        localStorage.setItem('medvault_user', JSON.stringify(user));
+    }
+    function loginSuccess(user) {
+        saveUser(user);
+        showLoader('Loading your dashboard…');
+        setTimeout(() => window.location.replace('index.html'), 900);
+    }
+
+    // ── Google callback (called by GSI after user picks account) ──
+    function handleGoogleLogin(response) {
+        try {
+            // Decode JWT payload
+            const base64 = response.credential.split('.')[1].replace(/-/g,'+').replace(/_/g,'/');
+            const payload = JSON.parse(atob(base64));
+            loginSuccess({
+                name:       payload.name,
+                firstName:  payload.given_name,
+                lastName:   payload.family_name,
+                email:      payload.email,
+                picture:    payload.picture,
+                provider:   'google'
+            });
+        } catch(e) {
+            showToast('⚠️ Google login failed. Please try Demo Account.');
+        }
+    }
+
+    // ── Initialize Google Identity Services ──
+    window.addEventListener('load', () => {
+        if (typeof google !== 'undefined' && google.accounts) {
+            google.accounts.id.initialize({
+                client_id: CLIENT_ID,
+                callback:  handleGoogleLogin,
+                ux_mode:   'popup',
+                auto_select: false,
+            });
+
+            // Render the official Google button inside #g-signin-btn
+            google.accounts.id.renderButton(
+                document.getElementById('g-signin-btn'),
+                {
+                    type:  'standard',
+                    theme: 'outline',
+                    size:  'large',
+                    text:  'continue_with',
+                    shape: 'rectangular',
+                    logo_alignment: 'left',
+                    width: 360,
+                }
+            );
+        } else {
+            // GSI script didn't load — show custom fallback button
+            document.getElementById('g-signin-btn').style.display = 'none';
+            const fb = document.getElementById('google-fallback-btn');
+            fb.style.display = 'flex';
+            fb.addEventListener('click', () => {
+                showToast('⚠️ Google Sign-In unavailable. Check internet and try again, or use Demo Account.');
+            });
+        }
+    });
+
+    // ── Demo login ──
+    document.getElementById('demo-btn').addEventListener('click', () => {
+        showLoader('Preparing demo account…');
+        setTimeout(() => {
+            loginSuccess({
+                name:      'Tash Avi',
+                firstName: 'Tash',
+                lastName:  'Avi',
+                email:     'tash.avi@demo.medvault.app',
+                picture:   null,
+                provider:  'demo'
+            });
+        }, 1000);
+    });
+</script>
+</body>
+</html>
