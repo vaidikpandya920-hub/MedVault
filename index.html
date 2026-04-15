@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MedVault — Smart Pharmacy & Healthcare Platform</title>
+    <meta name="description" content="Complete pharmacy platform with medicine shopping, doctor consultations, lab tests, smart dose timing, and toxicity prediction.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="index.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#6366f1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="MedVault">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%2307080d'/><rect x='15' y='38' width='70' height='24' rx='6' fill='%236366f1'/><rect x='38' y='15' width='24' height='70' rx='6' fill='%236366f1'/></svg>">
+    <script>
+        // Auth guard — redirect to login if not signed in
+        (function() {
+            try {
+                var u = localStorage.getItem('medvault_user');
+                if (!u) window.location.replace('login.html');
+            } catch(e) {}
+        })();
+    </script>
+</head>
+<body>
+    <!-- Ambient Background -->
+    <div class="ambient-bg">
+        <div class="ambient-orb orb-1"></div>
+        <div class="ambient-orb orb-2"></div>
+        <div class="ambient-orb orb-3"></div>
+    </div>
+
+    <!-- ==================== SIDEBAR ==================== -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-logo">
+            <div class="logo-icon-wrap">
+                <svg width="30" height="30" viewBox="0 0 30 30" fill="none">
+                    <rect x="2" y="10" width="26" height="10" rx="3" fill="url(#sideLogoG)"/>
+                    <rect x="10" y="2" width="10" height="26" rx="3" fill="url(#sideLogoG)"/>
+                    <defs><linearGradient id="sideLogoG" x1="0" y1="0" x2="30" y2="30"><stop offset="0%" stop-color="#6366f1"/><stop offset="100%" stop-color="#06b6d4"/></linearGradient></defs>
+                </svg>
+            </div>
+            <span class="logo-name">Med<span class="accent">Vault</span></span>
+        </div>
+
+        <nav class="sidebar-nav" id="sidebar-nav">
+            <button class="nav-item active" data-page="home" id="nav-home">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/></svg>
+                <span>Home</span>
+            </button>
+            <button class="nav-item" data-page="shop" id="nav-shop">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+                <span>Shop Medicines</span>
+                <span class="cart-badge hidden" id="cart-badge">0</span>
+            </button>
+            <button class="nav-item" data-page="doctors" id="nav-doctors">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                <span>Consult Doctor</span>
+            </button>
+            <button class="nav-item" data-page="lab" id="nav-lab">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.5 2v6.5L18 14a4.74 4.74 0 0 1-.71 5.26A4.66 4.66 0 0 1 14 21H10a4.66 4.66 0 0 1-3.29-1.74A4.74 4.74 0 0 1 6 14l3.5-5.5V2"/><line x1="8.5" y1="2" x2="15.5" y2="2"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+                <span>Lab Tests</span>
+            </button>
+            <button class="nav-item" data-page="prescriptions" id="nav-prescriptions">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                <span>Prescriptions</span>
+            </button>
+
+            <div class="nav-divider"></div>
+            <div class="nav-section-label">Health Tools</div>
+
+            <button class="nav-item" data-page="dose-timer" id="nav-dose-timer">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>
+                <span>Dose Timer</span>
+            </button>
+            <button class="nav-item" data-page="toxicity" id="nav-toxicity">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                <span>Toxicity Check</span>
+            </button>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="user-profile" id="user-profile-widget">
+                <div class="user-avatar" id="sidebar-avatar">?</div>
+                <div class="user-info">
+                    <div class="user-name" id="sidebar-user-name">Loading...</div>
+                    <div class="user-role" id="sidebar-user-email">Premium Member</div>
+                </div>
+            </div>
+            <button class="logout-btn" id="logout-btn" title="Sign out">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                    <polyline points="16,17 21,12 16,7"/>
+                    <line x1="21" y1="12" x2="9" y2="12"/>
+                </svg>
+            </button>
+        </div>
+    </aside>
+
+    <!-- Mobile Header -->
+    <header class="mobile-header" id="mobile-header">
+        <button class="hamburger" id="hamburger-btn">
+            <span></span><span></span><span></span>
+        </button>
+        <span class="mobile-logo">Med<span class="accent">Vault</span></span>
+        <button class="mobile-cart-btn" id="mobile-cart-btn">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+            <span class="mobile-cart-badge hidden" id="mobile-cart-badge">0</span>
+        </button>
+    </header>
+
+    <!-- ==================== MAIN CONTENT ==================== -->
+    <main class="main-content" id="main-content">
+
+        <!-- ====== HOME PAGE ====== -->
+        <section class="page active" id="page-home">
+            <div class="page-header">
+                <div>
+                    <h1 class="page-title">Welcome back, <span class="gradient-text" id="home-user-name">there</span> 👋</h1>
+                    <p class="page-subtitle">Your health dashboard at a glance</p>
+                </div>
+                <div class="header-actions">
+                    <div class="search-bar" id="global-search">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                        <input type="text" placeholder="Search medicines, doctors, tests..." id="global-search-input">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="quick-actions">
+                <button class="quick-action-card" data-goto="shop">
+                    <div class="qa-icon blue">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+                    </div>
+                    <span>Order Medicines</span>
+                </button>
+                <button class="quick-action-card" data-goto="doctors">
+                    <div class="qa-icon green">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                    </div>
+                    <span>Consult Doctor</span>
+                </button>
+                <button class="quick-action-card" data-goto="lab">
+                    <div class="qa-icon purple">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.5 2v6.5L18 14a4.74 4.74 0 0 1-.71 5.26A4.66 4.66 0 0 1 14 21H10a4.66 4.66 0 0 1-3.29-1.74A4.74 4.74 0 0 1 6 14l3.5-5.5V2"/></svg>
+                    </div>
+                    <span>Book Lab Test</span>
+                </button>
+                <button class="quick-action-card" data-goto="prescriptions">
+                    <div class="qa-icon amber">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17,8 12,3 7,8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                    </div>
+                    <span>Upload Prescription</span>
+                </button>
+                <button class="quick-action-card" data-goto="dose-timer">
+                    <div class="qa-icon cyan">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>
+                    </div>
+                    <span>Dose Timer</span>
+                </button>
+                <button class="quick-action-card" data-goto="toxicity">
+                    <div class="qa-icon red">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/></svg>
+                    </div>
+                    <span>Toxicity Check</span>
+                </button>
+            </div>
+
+            <!-- Dashboard Cards Row -->
+            <div class="dashboard-row">
+                <!-- Active Orders -->
+                <div class="dash-card">
+                    <div class="dash-card-header">
+                        <h3>Active Orders</h3>
+                        <span class="badge blue">2 orders</span>
+                    </div>
+                    <div class="order-item">
+                        <div class="order-icon">📦</div>
+                        <div class="order-details">
+                            <div class="order-name">Paracetamol 500mg × 2</div>
+                            <div class="order-status"><span class="status-dot green"></span> Out for Delivery</div>
+                        </div>
+                        <div class="order-time">Today, 4 PM</div>
+                    </div>
+                    <div class="order-item">
+                        <div class="order-icon">📦</div>
+                        <div class="order-details">
+                            <div class="order-name">Vitamin D3 Supplements</div>
+                            <div class="order-status"><span class="status-dot amber"></span> Processing</div>
+                        </div>
+                        <div class="order-time">Tomorrow</div>
+                    </div>
+                </div>
+
+                <!-- Upcoming Appointments -->
+                <div class="dash-card">
+                    <div class="dash-card-header">
+                        <h3>Upcoming Appointments</h3>
+                        <span class="badge green">1 today</span>
+                    </div>
+                    <div class="appointment-item">
+                        <div class="doc-avatar-sm" style="background: linear-gradient(135deg, #6366f1, #06b6d4);">DR</div>
+                        <div class="appointment-details">
+                            <div class="appointment-name">Dr. Priya Sharma</div>
+                            <div class="appointment-spec">Cardiologist • Video Call</div>
+                        </div>
+                        <div class="appointment-time">
+                            <div class="apt-time">5:30 PM</div>
+                            <div class="apt-date">Today</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Health Reminders -->
+                <div class="dash-card">
+                    <div class="dash-card-header">
+                        <h3>Medicine Reminders</h3>
+                        <span class="badge amber">3 today</span>
+                    </div>
+                    <div class="reminder-list">
+                        <div class="reminder-item done">
+                            <div class="reminder-check">✓</div>
+                            <div class="reminder-info">
+                                <div class="reminder-med">Metformin 500mg</div>
+                                <div class="reminder-time">8:00 AM – Taken</div>
+                            </div>
+                        </div>
+                        <div class="reminder-item active">
+                            <div class="reminder-check pending">!</div>
+                            <div class="reminder-info">
+                                <div class="reminder-med">Lisinopril 10mg</div>
+                                <div class="reminder-time">2:00 PM – Due</div>
+                            </div>
+                        </div>
+                        <div class="reminder-item upcoming">
+                            <div class="reminder-check upcoming-icon">⏳</div>
+                            <div class="reminder-info">
+                                <div class="reminder-med">Atorvastatin 20mg</div>
+                                <div class="reminder-time">9:00 PM – Upcoming</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ====== SHOP PAGE ====== -->
+        <section class="page" id="page-shop">
+            <div class="page-header">
+                <div>
+                    <h1 class="page-title">Shop <span class="gradient-text">Medicines</span></h1>
+                    <p class="page-subtitle">Order from 10,000+ medicines & healthcare products</p>
+                </div>
+                <div class="header-actions">
+                    <div class="search-bar">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                        <input type="text" placeholder="Search medicines..." id="shop-search-input">
+                    </div>
+                    <button class="btn-outline" id="view-cart-btn">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+                        Cart (<span id="cart-count-inline">0</span>)
+                    </button>
+                </div>
+            </div>
+
+            <!-- Categories -->
+            <div class="category-chips" id="category-chips">
+                <button class="chip active" data-cat="all">All</button>
+                <button class="chip" data-cat="pain">Pain Relief</button>
+                <button class="chip" data-cat="cold">Cold & Flu</button>
+                <button class="chip" data-cat="diabetes">Diabetes</button>
+                <button class="chip" data-cat="heart">Heart Health</button>
+                <button class="chip" data-cat="vitamins">Vitamins</button>
+                <button class="chip" data-cat="antibiotics">Antibiotics</button>
+                <button class="chip" data-cat="skin">Skin Care</button>
+            </div>
+
+            <!-- Products Grid -->
+            <div class="products-grid" id="products-grid">
+                <!-- Populated by JS -->
+            </div>
+
+            <!-- Cart Sidebar -->
+            <div class="cart-overlay hidden" id="cart-overlay"></div>
+            <div class="cart-sidebar hidden" id="cart-sidebar">
+                <div class="cart-header">
+                    <h2>🛒 Your Cart</h2>
+                    <button class="close-cart" id="close-cart-btn">&times;</button>
+                </div>
+                <div class="cart-items" id="cart-items">
+                    <div class="cart-empty" id="cart-empty">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.3"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+                        <p>Your cart is empty</p>
+                    </div>
+                </div>
+                <div class="cart-footer hidden" id="cart-footer">
+                    <div class="cart-total">
+                        <span>Total</span>
+                        <span class="total-amount" id="cart-total-amount">₹0</span>
+                    </div>
+                    <button class="btn-primary" id="checkout-btn">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22,4 12,14.01 9,11.01"/></svg>
+                        Proceed to Checkout
+                    </button>
+                    <p class="cart-disclaimer">Free delivery on orders above ₹499</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ====== DOCTORS PAGE ====== -->
+        <section class="page" id="page-doctors">
+            <div class="page-header">
+                <div>
+                    <h1 class="page-title">Consult a <span class="gradient-text-green">Doctor</span></h1>
+                    <p class="page-subtitle">Connect with certified specialists via video, audio, or chat</p>
+                </div>
+                <div class="header-actions">
+                    <div class="search-bar">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                        <input type="text" placeholder="Search doctors, specializations..." id="doctor-search-input">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Speciality Chips -->
+            <div class="category-chips" id="speciality-chips">
+                <button class="chip active" data-spec="all">All Doctors</button>
+                <button class="chip" data-spec="general">General Physician</button>
+                <button class="chip" data-spec="cardio">Cardiologist</button>
+                <button class="chip" data-spec="derma">Dermatologist</button>
+                <button class="chip" data-spec="ortho">Orthopedic</button>
+                <button class="chip" data-spec="neuro">Neurologist</button>
+                <button class="chip" data-spec="pedia">Pediatrician</button>
+                <button class="chip" data-spec="psycho">Psychiatrist</button>
+            </div>
+
+            <!-- Doctors Grid -->
+            <div class="doctors-grid" id="doctors-grid">
+                <!-- Populated by JS -->
+            </div>
+
+            <!-- Appointment Modal -->
+            <div class="modal-overlay hidden" id="appointment-modal">
+                <div class="modal">
+                    <button class="modal-close" id="close-appointment-modal">&times;</button>
+                    <div class="modal-header">
+                        <h2>📅 Book Appointment</h2>
+                    </div>
+                    <div class="modal-body" id="appointment-modal-body">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ====== LAB TESTS PAGE ====== -->
+        <section class="page" id="page-lab">
+            <div class="page-header">
+                <div>
+                    <h1 class="page-title">Lab <span class="gradient-text-purple">Tests</span></h1>
+                    <p class="page-subtitle">Book tests with home sample collection & view reports online</p>
+                </div>
+            </div>
+
+            <!-- Lab Tabs -->
+            <div class="lab-tabs">
+                <button class="lab-tab active" data-labtab="book" id="lab-tab-book">Book Tests</button>
+                <button class="lab-tab" data-labtab="reports" id="lab-tab-reports">My Reports</button>
+            </div>
+
+            <!-- Book Tests Panel -->
+            <div class="lab-panel active" id="lab-panel-book">
+                <div class="category-chips" id="test-category-chips">
+                    <button class="chip active" data-tcat="all">All Tests</button>
+                    <button class="chip" data-tcat="blood">Blood Tests</button>
+                    <button class="chip" data-tcat="diabetes">Diabetes</button>
+                    <button class="chip" data-tcat="thyroid">Thyroid</button>
+                    <button class="chip" data-tcat="liver">Liver</button>
+                    <button class="chip" data-tcat="kidney">Kidney</button>
+                    <button class="chip" data-tcat="packages">Health Packages</button>
+                </div>
+                <div class="tests-grid" id="tests-grid">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+
+            <!-- Reports Panel -->
+            <div class="lab-panel" id="lab-panel-reports">
+                <div class="reports-list" id="reports-list">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+
+            <!-- Test Booking Modal -->
+            <div class="modal-overlay hidden" id="test-booking-modal">
+                <div class="modal">
+                    <button class="modal-close" id="close-test-modal">&times;</button>
+                    <div class="modal-header">
+                        <h2>🧪 Book Lab Test</h2>
+                    </div>
+                    <div class="modal-body" id="test-modal-body"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ====== PRESCRIPTIONS PAGE ====== -->
+        <section class="page" id="page-prescriptions">
+            <div class="page-header">
+                <div>
+                    <h1 class="page-title">My <span class="gradient-text-amber">Prescriptions</span></h1>
+                    <p class="page-subtitle">Upload, store, and manage all your prescriptions digitally</p>
+                </div>
+            </div>
+
+            <div class="prescriptions-layout">
+                <!-- Upload Area -->
+                <div class="card upload-card">
+                    <div class="upload-zone" id="upload-zone">
+                        <div class="upload-icon">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                <polyline points="17,8 12,3 7,8"/>
+                                <line x1="12" y1="3" x2="12" y2="15"/>
+                            </svg>
+                        </div>
+                        <h3>Upload Prescription</h3>
+                        <p>Drag & drop your prescription image here, or click to browse</p>
+                        <input type="file" id="prescription-file-input" accept="image/*,.pdf" hidden>
+                        <button class="btn-outline mt-16" id="browse-files-btn">Browse Files</button>
+                    </div>
+                    <div class="upload-preview hidden" id="upload-preview">
+                        <div class="preview-image-wrap">
+                            <img id="preview-image" src="" alt="Prescription preview">
+                        </div>
+                        <div class="preview-actions">
+                            <input type="text" class="input-field" placeholder="Add a label (e.g., Dr. Sharma - Apr 2026)" id="prescription-label">
+                            <div class="btn-row">
+                                <button class="btn-outline" id="cancel-upload-btn">Cancel</button>
+                                <button class="btn-primary" id="save-prescription-btn">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17,21 17,13 7,13 7,21"/></svg>
+                                    Save Prescription
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Saved Prescriptions -->
+                <div class="card saved-prescriptions-card">
+                    <div class="card-header">
+                        <div class="card-icon amber">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>
+                        </div>
+                        <h2>Saved Prescriptions</h2>
+                    </div>
+                    <div class="prescriptions-list" id="prescriptions-list">
+                        <!-- Populated by JS with demo data -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ====== DOSE TIMER PAGE ====== -->
+        <section class="page" id="page-dose-timer">
+            <div class="page-header">
+                <div>
+                    <div class="hero-badge">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                        Smart Dose Timing
+                    </div>
+                    <h1 class="page-title">Precision Dose Scheduling<br>Based on <span class="gradient-text">Half-Life</span></h1>
+                    <p class="page-subtitle">Calculate your exact next dose timing using pharmacokinetic half-life data and personalized metabolism factors.</p>
+                </div>
+            </div>
+
+            <div class="two-col-grid">
+                <!-- Input Card -->
+                <div class="card" id="dose-input-card">
+                    <div class="card-header">
+                        <div class="card-icon blue"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M9 12h6M12 9v6"/></svg></div>
+                        <h2>Drug Parameters</h2>
+                    </div>
+                    <div class="form-group">
+                        <label for="drug-select">Drug Preset</label>
+                        <select id="drug-select" class="input-field">
+                            <option value="custom">Custom Drug</option>
+                            <option value="ibuprofen">Ibuprofen (t½ ≈ 2h)</option>
+                            <option value="acetaminophen">Acetaminophen (t½ ≈ 2.5h)</option>
+                            <option value="amoxicillin">Amoxicillin (t½ ≈ 1h)</option>
+                            <option value="aspirin">Aspirin (t½ ≈ 3.5h)</option>
+                            <option value="metformin">Metformin (t½ ≈ 5h)</option>
+                            <option value="lisinopril">Lisinopril (t½ ≈ 12h)</option>
+                            <option value="atorvastatin">Atorvastatin (t½ ≈ 14h)</option>
+                            <option value="diazepam">Diazepam (t½ ≈ 43h)</option>
+                            <option value="fluoxetine">Fluoxetine (t½ ≈ 72h)</option>
+                        </select>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group"><label for="half-life">Half-Life (hours)</label><input type="number" id="half-life" class="input-field" placeholder="e.g. 4" min="0.1" step="0.1" value="4"></div>
+                        <div class="form-group"><label for="dose-amount">Dose (mg)</label><input type="number" id="dose-amount" class="input-field" placeholder="e.g. 200" min="1" value="200"></div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group"><label for="time-since-dose">Time Since Last Dose (h)</label><input type="number" id="time-since-dose" class="input-field" placeholder="e.g. 3" min="0" step="0.1" value="3"></div>
+                        <div class="form-group"><label for="target-level">Min Effective Level (%)</label><input type="number" id="target-level" class="input-field" placeholder="e.g. 25" min="1" max="99" value="25"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="metabolism-rate">Patient Metabolism</label>
+                        <div class="metabolism-slider-wrap">
+                            <input type="range" id="metabolism-rate" class="slider" min="0.5" max="2.0" step="0.05" value="1.0">
+                            <div class="slider-labels"><span>Slow</span><span id="metabolism-value" class="metabolism-val">1.00×</span><span>Fast</span></div>
+                        </div>
+                    </div>
+                    <button class="btn-primary" id="calculate-dose-btn">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                        Calculate Next Dose
+                    </button>
+                </div>
+
+                <!-- Result Card -->
+                <div class="card" id="dose-result-card">
+                    <div class="card-header">
+                        <div class="card-icon green"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg></div>
+                        <h2>Dose Timing Result</h2>
+                    </div>
+                    <div class="result-placeholder" id="dose-result-placeholder">
+                        <div class="placeholder-icon"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.3"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg></div>
+                        <p>Configure parameters and click<br><strong>"Calculate Next Dose"</strong> to see results</p>
+                    </div>
+                    <div class="result-content hidden" id="dose-result-content">
+                        <div class="next-dose-display" id="next-dose-display">
+                            <div class="next-dose-label">Next Dose In</div>
+                            <div class="next-dose-time" id="next-dose-time">—</div>
+                            <div class="next-dose-sublabel" id="next-dose-sublabel">for optimal effect</div>
+                        </div>
+                        <div class="result-stats">
+                            <div class="stat-item"><div class="stat-label">Current Drug Level</div><div class="stat-value" id="stat-current-level">—</div></div>
+                            <div class="stat-item"><div class="stat-label">Effective Half-Life</div><div class="stat-value" id="stat-effective-hl">—</div></div>
+                            <div class="stat-item"><div class="stat-label">Elimination Rate</div><div class="stat-value" id="stat-elim-rate">—</div></div>
+                            <div class="stat-item"><div class="stat-label">Drug Remaining</div><div class="stat-value" id="stat-drug-remaining">—</div></div>
+                        </div>
+                        <div class="chart-wrap"><h3>Concentration Decay Curve</h3><canvas id="decay-chart" width="500" height="220"></canvas></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ====== TOXICITY PAGE ====== -->
+        <section class="page" id="page-toxicity">
+            <div class="page-header">
+                <div>
+                    <div class="hero-badge warn">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                        Safety Monitor
+                    </div>
+                    <h1 class="page-title">Drug Accumulation &<br><span class="gradient-text-warn">Toxicity Predictor</span></h1>
+                    <p class="page-subtitle">Track drug levels after repeated dosing and get warnings when approaching toxic thresholds.</p>
+                </div>
+            </div>
+
+            <div class="two-col-grid">
+                <div class="card" id="tox-input-card">
+                    <div class="card-header">
+                        <div class="card-icon amber"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></div>
+                        <h2>Dosing Schedule</h2>
+                    </div>
+                    <div class="form-group">
+                        <label for="tox-drug-select">Drug Preset</label>
+                        <select id="tox-drug-select" class="input-field">
+                            <option value="custom">Custom Drug</option>
+                            <option value="ibuprofen">Ibuprofen (t½ ≈ 2h)</option>
+                            <option value="acetaminophen">Acetaminophen (t½ ≈ 2.5h)</option>
+                            <option value="amoxicillin">Amoxicillin (t½ ≈ 1h)</option>
+                            <option value="aspirin">Aspirin (t½ ≈ 3.5h)</option>
+                            <option value="metformin">Metformin (t½ ≈ 5h)</option>
+                            <option value="diazepam">Diazepam (t½ ≈ 43h)</option>
+                            <option value="fluoxetine">Fluoxetine (t½ ≈ 72h)</option>
+                        </select>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group"><label for="tox-half-life">Half-Life (hours)</label><input type="number" id="tox-half-life" class="input-field" value="4" min="0.1" step="0.1"></div>
+                        <div class="form-group"><label for="tox-dose">Dose per Intake (mg)</label><input type="number" id="tox-dose" class="input-field" value="200" min="1"></div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group"><label for="tox-interval">Dosing Interval (hours)</label><input type="number" id="tox-interval" class="input-field" value="6" min="0.5" step="0.5"></div>
+                        <div class="form-group"><label for="tox-doses">Number of Doses</label><input type="number" id="tox-doses" class="input-field" value="8" min="1" max="50"></div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group"><label for="tox-toxic-level">Toxic Threshold (mg)</label><input type="number" id="tox-toxic-level" class="input-field" value="500" min="1"></div>
+                        <div class="form-group"><label for="tox-metabolism">Metabolism Factor</label><input type="number" id="tox-metabolism" class="input-field" value="1.0" min="0.5" max="2.0" step="0.05"></div>
+                    </div>
+                    <button class="btn-primary btn-warn" id="calculate-toxicity-btn">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                        Predict Accumulation
+                    </button>
+                </div>
+
+                <div class="card" id="tox-result-card">
+                    <div class="card-header">
+                        <div class="card-icon red"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
+                        <h2>Accumulation Analysis</h2>
+                    </div>
+                    <div class="result-placeholder" id="tox-result-placeholder">
+                        <div class="placeholder-icon"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.3"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
+                        <p>Set dosing schedule and click<br><strong>"Predict Accumulation"</strong> to analyze</p>
+                    </div>
+                    <div class="result-content hidden" id="tox-result-content">
+                        <div class="safety-banner" id="safety-banner">
+                            <div class="safety-icon" id="safety-icon"></div>
+                            <div class="safety-text"><div class="safety-title" id="safety-title">—</div><div class="safety-desc" id="safety-desc">—</div></div>
+                        </div>
+                        <div class="result-stats">
+                            <div class="stat-item"><div class="stat-label">Peak Accumulation</div><div class="stat-value" id="stat-peak-accum">—</div></div>
+                            <div class="stat-item"><div class="stat-label">Steady-State Level</div><div class="stat-value" id="stat-steady-state">—</div></div>
+                            <div class="stat-item"><div class="stat-label">Accumulation Factor</div><div class="stat-value" id="stat-accum-factor">—</div></div>
+                            <div class="stat-item"><div class="stat-label">Time to Steady State</div><div class="stat-value" id="stat-time-steady">—</div></div>
+                        </div>
+                        <div class="chart-wrap">
+                            <h3>Drug Level Over Multiple Doses</h3>
+                            <canvas id="accumulation-chart" width="500" height="250"></canvas>
+                            <div class="chart-legend">
+                                <div class="legend-item"><span class="legend-dot drug-level"></span> Drug Level</div>
+                                <div class="legend-item"><span class="legend-dot toxic-line"></span> Toxic Threshold</div>
+                                <div class="legend-item"><span class="legend-dot dose-marker"></span> Dose Given</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Toast Notification -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <script src="app.js"></script>
+</body>
+</html>
